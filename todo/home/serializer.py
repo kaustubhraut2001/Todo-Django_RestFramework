@@ -6,3 +6,4 @@ class TodoSerializer(serializers.ModelSerializer):
         model = Todo
         fields = '__all__' # as we need all fileds here
     
+    

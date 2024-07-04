@@ -5,19 +5,20 @@ from rest_framework.response import Response
 
 from .models import Todo
 
-from .seralizer import TodoSerializer
+from .serializer import TodoSerializer
 
 # Create your views here.
 
 
 @api_view(['GET'])
-def getallTodos(self , request):
-    todos = Todo.objects.all()
-    serializer = TodoSerializer(todos, many=True)
-    return Response(serializer.data)
+def getallTodos( request):
+    # todos = Todo.objects.all()
+    # serializer = TodoSerializer(todos, many=True)
+    # return Response(serializer.data)
+    return "Hello"
 
 @api_view(['POST'])
-def addTodo(self , request):
+def addTodo( request):
     serializer = TodoSerializer(data=request.data)
     print("in add todo seralizer")
     if serializer.is_valid():
