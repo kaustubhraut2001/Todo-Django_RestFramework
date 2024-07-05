@@ -44,3 +44,14 @@ def registerUser(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# delete todo
+
+@api_view(['DELETE'])
+@permission_classes([AllowAny])
+def deletetodo(request, todoid):
+
+    queryset = Todo.objects.get(id=todoid)
+    seralizer = TodoSerializer(queryset)
+    queryset.delete()
+    return Response( seralizer.data , status=status.HTTP_204_NO_CONTENT)

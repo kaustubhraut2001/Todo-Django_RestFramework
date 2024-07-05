@@ -8,4 +8,5 @@ urlpatterns = [
     path('getall/', views.getallTodos, name='getallTodos'),
     path('add/', views.addTodo, name='addTodo'),
     path('register/' , views.registerUser, name='registerUser'),
+    path('deletetodo/<int:todoid>', views.deletetodo, name='deletetodo'),
 ]
