@@ -1,26 +1,46 @@
 from django.shortcuts import render
-
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-
+from rest_framework import status
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.permissions import AllowAny
 from .models import Todo
-
 from .serializer import TodoSerializer
+
+from django.contrib.auth.hashers import make_password
 
 # Create your views here.
 
-
 @api_view(['GET'])
-def getallTodos( request):
-    # todos = Todo.objects.all()
-    # serializer = TodoSerializer(todos, many=True)
-    # return Response(serializer.data)
-    return "Hello"
+@permission_classes([AllowAny])
+def getallTodos(request):
+    queryset = Todo.objects.all()
+    serializer = TodoSerializer(queryset, many=True)
+    return Response(serializer.data)
 
 @api_view(['POST'])
-def addTodo( request):
+@permission_classes([AllowAny])
+def addTodo(request):
+    queryset = Todo.objects.all()
     serializer = TodoSerializer(data=request.data)
-    print("in add todo seralizer")
     if serializer.is_valid():
         serializer.save()
-    return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# suppoose we wnats to regisetr the user in the database
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def registerUser(request):
+    data = request.data.copy()
+    data['password'] = make_password(data['password'])
+    serializer = TodoSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
