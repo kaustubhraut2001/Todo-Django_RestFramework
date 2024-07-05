@@ -9,6 +9,7 @@ from .serializer import TodoSerializer
 
 from django.contrib.auth.hashers import make_password
 
+
 # Create your views here.
 
 @api_view(['GET'])
@@ -55,3 +56,20 @@ def deletetodo(request, todoid):
     seralizer = TodoSerializer(queryset)
     queryset.delete()
     return Response( seralizer.data , status=status.HTTP_204_NO_CONTENT)
+
+
+# updatetodo
+@api_view(['PATCH'])
+@permission_classes([AllowAny])
+def updatetodo(request, todoid):
+    try:
+        queryset = Todo.objects.get(id=todoid)
+    except Todo.DoesNotExist:
+        raise "Not Found"
+
+    serializer = TodoSerializer(queryset, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
